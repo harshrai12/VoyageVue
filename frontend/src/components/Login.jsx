@@ -1,15 +1,16 @@
 import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-export default function Login({ openl, setOpenl }) {
+export default function Login({ openl, setOpenl,setUser }) {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
 
   const cancelButtonRef = useRef(null);
-
+  const navigate = useNavigate();
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -38,7 +39,9 @@ export default function Login({ openl, setOpenl }) {
       const data = await response.json();
       const {token} = data;
       localStorage.setItem('token',token)
+      setUser(token);
       console.log(data);
+      navigate("/home");
 
       // Close the dialog or handle other actions as needed
       setOpenl(false);
@@ -135,6 +138,12 @@ export default function Login({ openl, setOpenl }) {
                         Register here
                       </Link>
                     </p>
+                    <p className="mt-4 text-center text-sm text-gray-500">
+                    Admin?{' '}
+                    <Link to="/admin/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                      login here
+                    </Link>
+                  </p>
                   </div>
                 </div>
               </Dialog.Panel>

@@ -12,6 +12,7 @@ function Navbar() {
       <Link to="/home"><li>Expore</li></Link>
       <li>Contact Us</li>
       <li>About Us</li>
+      <Link to="/book"><li>Book a Trip</li></Link>
       </ul>
      
       <li><CiSearch size={18}/></li>

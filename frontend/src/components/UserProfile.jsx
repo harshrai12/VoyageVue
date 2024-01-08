@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import UserNavbar from './UserNavbar';
-import DiaryCard from './Diaries/Diarycard';
+
 import { CiCirclePlus } from "react-icons/ci";
 import DiaryPostForm from './Diaries/DiaryPostForm';
 
 function UserProfile() {
   const [userData, setUserData] = useState(null);
   const [openD, setOpenD] = useState(false)
+  const [privatePosts, setPrivatePosts] = useState([]);
+  const [publicPosts, setPublicPosts] = useState([]);
 
   useEffect(() => {
    
@@ -24,6 +26,12 @@ function UserProfile() {
         .then((data) => {
 
           setUserData(data);
+
+          const privatePosts = data.posts.filter(post => post.visibility === 'private');
+          const publicPosts = data.posts.filter(post => post.visibility === 'public');
+          setPrivatePosts(privatePosts);
+          setPublicPosts(publicPosts);
+          console.log(privatePosts)
         })
         .catch((error) => {
           console.error('Error fetching user data:', error);
@@ -31,10 +39,11 @@ function UserProfile() {
     }
   }, []); 
 
-  console.log(userData)
+  console.log(privatePosts)
   return (
     <div className="bg-gray-100 min-h-screen bg-cover" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1682685797140-c17807f8f217?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")' }}>
       <UserNavbar />
+      
 
       <div className="mx-auto max-w-xl mt-16 lg:max-w-4xl">
         <div className="bg-white rounded-lg overflow-hidden shadow-md">
@@ -59,6 +68,44 @@ function UserProfile() {
           )} 
 
           {/* ... (rest of your component) */}
+          <div className="flex w-full  justify-center ">
+  <div className="private-post bg-white p-4 rounded shadow-md">
+    <h1 className="text-xl font-bold mb-4">Private Posts</h1>
+    {privatePosts.length === 0 ? (
+      <p className="flex items-center justify-center text-gray-600 text-center">No private posts yet</p>
+    ) : (
+      privatePosts.map((item, index) => (
+        <div key={index} className="mb-4">
+          <p className="text-lg font-semibold text-purple-700">{item.destination}</p>
+          <p className="text-gray-600">{item.description}</p>
+          <img
+          src={`data:image/jpeg;base64,${item.image}`}  
+          alt="User Profile"
+          className="w-16 h-16 mt-4 border-4 border-purple-700"
+        />
+        </div>
+      ))
+    )}
+  </div>
+        
+          <div className="public-post bg-white p-4 rounded shadow-md">
+            <h1 className="text-xl font-bold mb-4">Public Posts</h1>
+            {publicPosts.map((item, index) => (
+              <div key={index} className="mb-4">
+                <p className="text-lg font-semibold text-purple-700">{item.destination}</p>
+                <p className="text-gray-600">{item.description}</p>
+               
+                <img
+                  src={`data:image/jpeg;base64,${item.image}`}  
+                  alt="User Profile"
+                  className="w-16 h-16 mt-4 border-4 border-purple-700"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        
+          
           
         </div>
       </div>

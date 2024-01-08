@@ -20,33 +20,33 @@ export default function DiaryPostForm({ openD, setOpenD }) {
 
   const handleDiaryPost = async (event) => {
     event.preventDefault();
-
+    const token = localStorage.getItem('token');
+  
     try {
-      const formDataToSend = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        formDataToSend.append(key, value);
-      });
-
       const response = await fetch('http://localhost:3000/diary-posts', {
         method: 'POST',
-        body: formDataToSend,
+        body: new FormData(event.target),
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }, // Use the form directly
       });
-
+  
       console.log(formData);
-
+  
       if (!response.ok) {
-        console.error('Diary post creation failed');
+        console.error('Diary post creation failed'); 
         return;
       }
-
+  
       const data = await response.json();
       console.log(data);
-
+  
       setOpenD(false);
     } catch (error) {
       console.error('Error creating diary post:', error);
     }
   };
+  
 
   return (
 
