@@ -39,7 +39,7 @@ const TripCatalog = ({ trips }) => {
       {trips.map((trip) => (
         <div
           key={trip.id}
-          className="flex items-center justify-between bg-gray-300 bg-opacity-60 p-6 m-6  rounded-lg shadow-md  w-full md:w-1/2 lg:w-auto "
+          className="flex items-center justify-between bg-gray-500 bg-opacity-60 p-6 m-6  rounded-lg shadow-md  w-full md:w-1/2 lg:w-auto "
         >
           <div>
             <img

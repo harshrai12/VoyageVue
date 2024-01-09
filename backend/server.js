@@ -213,7 +213,7 @@ app.post('/diary-posts', authenticateUser, upload.single('image'), async (req, r
     await diaryPost.save();
     user.posts.push(diaryPost._id);
     await user.save();
-    io.emit('newDiaryPost', { user: req.userId, post: diaryPost });
+    
     res.status(201).json({ message: 'Diary post created successfully' });
   } catch (error) {
     console.error('Error:', error);
@@ -299,15 +299,17 @@ app.get('/admin/dashboard', async (req, res) => {
     // Fetch all users and their posts from the database
     const usersWithPosts = await User.find().populate('posts');
 
-    // Transform the data to include user names with each post
+    // Transform the data to include user IDs and post IDs
     const transformedData = usersWithPosts.map(user => {
       return {
+        _id: user._id, // Include the user ID
         Fullname: user.Fullname,
-        email:user.email,
-        profileImage:user.profileImage,
+        email: user.email,
+        profileImage: user.profileImage,
 
         posts: user.posts.map(post => {
           return {
+            _id: post._id, // Include the post ID
             destination: post.destination,
             date: post.date,
             description: post.description,
@@ -326,6 +328,46 @@ app.get('/admin/dashboard', async (req, res) => {
   }
 });
 
+
+
+app.delete('/admin/deletePost', async (req, res) => {
+  const { userId, postId } = req.body;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Remove the post from the user's posts array
+    user.posts.pull(postId);
+    await user.save();
+
+    // Delete the post
+    await DiaryPost.findByIdAndDelete(postId);
+
+    res.json({ message: 'Post deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    res.status(500).json({ error: 'Error deleting post' });
+  }
+});
+
+app.delete('/admin/deleteUser', async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    // Find the user by ID and delete it
+    await User.findByIdAndDelete(userId);
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Error deleting user' });
+  }
+});
 
 
 
