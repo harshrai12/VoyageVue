@@ -32,6 +32,7 @@ function DiaryList() {
     return (
       <div className='flex flex-wrap mx-auto mt-10 justify-center items-center gap-7 lg:flex-row  h-screen'>
         <h1 className="text-white text-4xl">Loading...</h1>
+        
       </div>
     );
   } else {

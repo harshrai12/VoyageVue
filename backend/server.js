@@ -5,13 +5,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 app.use(cors());
 const PORT = process.env.PORT || 3000;
 
 
-mongoose.connect('mongodb+srv://harshpayal3252:VoyageVue@voyagevue.cegdow1.mongodb.net/?retryWrites=true&w=majority',
+mongoose.connect(process.env.MONGODB_URI ,
 { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
@@ -94,8 +95,10 @@ app.post('/register', upload.single('profileImage'), async (req, res) => {
 const authenticateUser = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
+    
+   
     const decoded = jwt.verify(token, 'your-secret-key'); // Replace with your own secret key
-
+    console.log("decoded",decoded)
     req.userId = decoded.userId;
     next();
   } catch (error) {
@@ -106,7 +109,7 @@ const authenticateUser = async (req, res, next) => {
 
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
-
+   
   try {
     const user = await User.findOne({ email });
 
@@ -115,7 +118,7 @@ app.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, 'your-secret-key', { expiresIn: '1h' }); // Replace with your own secret key
-
+    console.log("login",token)
     res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ error: 'Error authenticating user' });
@@ -163,9 +166,7 @@ app.get('/recent-activity', async (req, res) => {
   }
 });
 
-// Your existing code...
 
-// Start the server
 
 
 

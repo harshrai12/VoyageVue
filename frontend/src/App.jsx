@@ -19,7 +19,7 @@ function App() {
   const token = localStorage.getItem('token');
  const [user,setUser]= useState(token);
 
-console.log(user)
+
   return (
     <BrowserRouter>
       <Routes>
